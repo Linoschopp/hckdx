@@ -1,4 +1,13 @@
+import os
+from operator import attrgetter
 from queue import Queue
+
+if os.getenv("client") == "true":
+    import time
+    import pyautogui
+    client = True
+else:
+    client = False
 
 
 class Mode:
@@ -18,8 +27,19 @@ class Mode:
 
 
 class Command:
-    def __init__(self):
-        raise NotImplementedError
+    def __init__(self, name: str, args: list):
+        self.name = name
+        self.args = args
+    def execute(self):
+        if not client:
+            print("This method should only be used by clients.")
+            return
+        match self.name:
+            case "SLEEP":
+                d, = self.args
+                time.sleep(d)
+
+
 
 
 class Device:
@@ -28,6 +48,7 @@ class Device:
             commands = Queue()
         self.hostname = hostname
         self.commands = commands
+        self.active = False
 
     def put(self, command: Command):
         self.commands.put(command)
@@ -38,22 +59,38 @@ class Device:
     def task_done(self):
         self.commands.task_done()
 
+class DeviceStorage:
+    def __init__(self, devices=None):
+        if devices is None:
+            devices = []
+        self.devices: list[Device] = devices
 
-def get_registered_devices() -> list[Device]:
-    raise NotImplementedError
+    def __iter__(self):
+        return self.devices
 
+    def get_device(self, device_hostname):
+        for device in self:
+            if device.hostname == device_hostname:
+                return device
 
-def get_active_mode() -> Mode:
-    raise NotImplementedError
+    def __getitem__(self, item):
+        return self.get_device(item)
 
+    def active(self):
+        return list(map(attrgetter("active"), self.devices))
 
-def get_active_devices() -> list[Device]:
-    raise NotImplementedError
+    @classmethod
+    def load_devices(cls, floc):
+        if not os.path.isfile(floc):
+            return cls()
+        with open(floc, "r") as f:
+            device_names = filter(bool, f.read().split("\n"))
+        devices = []
+        for device_name in device_names:
+            devices.append(Device(device_name))
+        return DeviceStorage(devices)
 
-def get_device(device_hostname):
-    for device in get_registered_devices():
-        if device.hostname == device_hostname:
-            return device
-
-def put_host(device_hostname, command: Command):
-    get_device(device_hostname).put(command)
+    def save(self, floc):
+        file_content = "\n".join(map(attrgetter("hostname"), self.devices))
+        with open(floc, "w") as f:
+            f.write(file_content)
