@@ -1,6 +1,7 @@
 import os
-from operator import attrgetter
+import re
 from queue import Queue
+from operator import attrgetter
 
 if os.getenv("client") == "true":
     import time
@@ -10,24 +11,8 @@ else:
     client = False
 
 
-class Mode:
-    def __init__(self, *, single: bool = None, multi: bool = None, string_repr: str = None):
-        self.string_repr: str
-        if single == True or multi == False:
-            self.string_repr = "single"
-        elif single == False or multi == True:
-            self.string_repr = "multi"
-        elif string_repr in ("single", "multi"):
-            self.string_repr = string_repr
-        else:
-            raise TypeError("Mode() must have one argument.")
-
-    def __str__(self):
-        return self.string_repr
-
-
 class Command:
-    def __init__(self, name: str, args: list):
+    def __init__(self, name: str, args: list[str]):
         self.name = name
         self.args = args
     def execute(self):
@@ -37,9 +22,13 @@ class Command:
         match self.name:
             case "SLEEP":
                 d, = self.args
-                time.sleep(d)
+                time.sleep(int(d))
+    def export_to_string(self):
+        return self.name+":"+"\0".join(self.args)
 
-
+    @classmethod
+    def import_from_string(cls, string: str):
+        return cls(string.split(":", 1)[0], string.split(":", 1)[1].split("\0"))
 
 
 class Device:
@@ -47,7 +36,7 @@ class Device:
         if commands is None:
             commands = Queue()
         self.hostname = hostname
-        self.commands = commands
+        self.commands: Queue[Command] = commands
         self.active = False
 
     def put(self, command: Command):
