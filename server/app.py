@@ -96,8 +96,8 @@ def get_command():
         if not device:
             print(f"Device {device_hostname} not found in devices.")
             return "DEVICE NOT FOUND", 404
-
-        return device.get().export_to_string()
+        cmd = device.get()
+        return cmd.export_to_string()
 
 if __name__ == '__main__':
     app.run(debug=True)
