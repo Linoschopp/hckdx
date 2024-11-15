@@ -23,6 +23,9 @@ class Command:
             case "SLEEP":
                 d, = self.args
                 time.sleep(int(d))
+            case "BLANK":
+                return
+
     def export_to_string(self):
         return self.name+":"+"\0".join(self.args)
 
