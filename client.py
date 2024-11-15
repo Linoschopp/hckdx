@@ -21,7 +21,9 @@ def getcmd(token):
     print("Requesting command...")
     with urllib.request.urlopen(request) as response:
         response: http.client.HTTPResponse
-        cmd = management.Command.import_from_string(response.read().decode())
+        data = response.read().decode()
+        print(data)
+        cmd = management.Command.import_from_string(data)
         print(f"{cmd.name}: {', '.join(cmd.args)}")
 
 while True:
