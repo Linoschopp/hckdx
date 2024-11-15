@@ -19,7 +19,6 @@ def register():
     hostname = request.get_data().decode()
     token = jwt.encode({"sub": DEVICE_PREFIX+hostname}, SECRET, "HS256")
     devices.devices.append(Device(hostname))
-    print(devices.devices[-1].hostname)
     return token
 
 @app.get("/active")
