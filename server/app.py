@@ -64,7 +64,7 @@ def inactivate(device_hostname):
 def add_command(device_hostname):
     token = request.headers.get("Token")
     try:
-        payload = jwt.decode(token, SECRET)
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
         return "TOKEN EXPIRED", 401
     except jwt.InvalidTokenError:
