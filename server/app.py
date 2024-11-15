@@ -60,9 +60,10 @@ def inactivate(device_hostname):
             devices[device_hostname].active = False
 
 
-@app.post("/commands/add/<device_hostname>")
-def add_command(device_hostname):
+@app.post("/commands/add/")
+def add_command():
     token = request.headers.get("Token")
+    device_hostname = request.headers.get("Device")
     try:
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
