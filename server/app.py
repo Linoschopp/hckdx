@@ -76,7 +76,16 @@ def add_command():
         if payload["sub"] != "theOnlyLino":
             return "YOU ARE NOT LINO", 401
         else:
-            request.get_data()
+            data = request.get_data().decode()
+            cmd = management.Command.import_from_string(data)
+            print(device_hostname)
+            device = devices.get_device(device_hostname)
+            if not device:
+                print(f"Device {device_hostname} not found in devices.")
+                return "DEVICE NOT FOUND", 404
+            device.put(cmd)
+            return "SUCCESS", 200
+
 
 @app.get("/commands/get")
 def get_command():
