@@ -26,6 +26,6 @@ def getcmd(token):
         cmd = management.Command.import_from_string(data)
         print(f"{cmd.name}: {', '.join(cmd.args)}")
 
+token = register()
 while True:
-    token = register()
     getcmd(token)
