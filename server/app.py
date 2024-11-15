@@ -29,7 +29,7 @@ def active():
 def activate(device_hostname):
     token = request.headers.get("Token")
     try:
-        payload = jwt.decode(token, SECRET)
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
         return "TOKEN EXPIRED", 401
     except jwt.InvalidTokenError:
@@ -46,7 +46,7 @@ def activate(device_hostname):
 def inactivate(device_hostname):
     token = request.headers.get("Token")
     try:
-        payload = jwt.decode(token, SECRET)
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
         return "TOKEN EXPIRED", 401
     except jwt.InvalidTokenError:
@@ -81,8 +81,7 @@ def add_command(device_hostname):
 def get_command():
     token = request.headers.get("Token")
     try:
-        payload = jwt.decode(token, SECRET)
-        print(f"Decoded payload: {payload}")
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
         return "TOKEN EXPIRED", 401
     except jwt.InvalidTokenError:
