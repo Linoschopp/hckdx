@@ -18,6 +18,7 @@ def register():
 
 def getcmd(token):
     request = urllib.request.Request(f"{URL}/commands/get", headers={"Token":token})
+    print("Requesting command...")
     with urllib.request.urlopen(request) as response:
         response: http.client.HTTPResponse
         cmd = management.Command.import_from_string(response.read().decode())
