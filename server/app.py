@@ -8,6 +8,7 @@ from management import Device
 
 SECRET = "iCH hAcKe scHuLcomPuTer, aBer das DaRf niemAnd wIsSen!1!"
 DEVICES_STORAGE_LOCATION = "devices.txt"
+DEVICE_PREFIX = "DEV_"
 
 devices = management.DeviceStorage.load_devices(DEVICES_STORAGE_LOCATION)
 
@@ -90,10 +91,9 @@ def get_command():
     except jwt.PyJWTError:
         return "TOKEN-AUTH ERROR", 500
     else:
-        device_hostname = payload["sub"]
-        print(f"Looking for device: {device_hostname}")
-
-        # Verwende get_device, um das Gerät zu finden
+        if not payload["sub"].startswith("DEV_"):
+            return "INVALID TOKEN", 401
+        device_hostname = payload["sub"][4:]
         device = devices.get_device(device_hostname)
         if not device:
             print(f"Device {device_hostname} not found in devices.")
