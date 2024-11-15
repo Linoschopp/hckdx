@@ -46,7 +46,9 @@ class Device:
         self.commands.put(command)
 
     def get(self):
-        return self.commands.get()
+        cmd = self.commands.get()
+        self.commands.task_done()
+        return cmd
 
     def task_done(self):
         self.commands.task_done()
