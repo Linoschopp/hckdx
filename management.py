@@ -60,7 +60,7 @@ class DeviceStorage:
         self.devices: list[Device] = devices
 
     def __iter__(self):
-        return self.devices
+        return iter(self.devices)
 
     def get_device(self, device_hostname):
         for device in self:
