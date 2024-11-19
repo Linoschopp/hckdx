@@ -26,9 +26,11 @@ def active():
     device = request.headers.get("Device")
     return str(devices[device].active)
 
-@app.post("/active/<device_hostname>")
-def activate(device_hostname):
+
+@app.post("/activate")
+def activate():
     token = request.headers.get("Token")
+    device_hostname = request.headers.get("Device")
     try:
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
@@ -43,9 +45,11 @@ def activate(device_hostname):
         else:
             devices[device_hostname].active = True
 
-@app.post("/inactive/<device_hostname>")
-def inactivate(device_hostname):
+
+@app.post("/deactivate")
+def deactivate():
     token = request.headers.get("Token")
+    device_hostname = request.headers.get("Device")
     try:
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
