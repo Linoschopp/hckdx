@@ -110,4 +110,6 @@ def get_command():
         return cmd.export_to_string()
 
 if __name__ == '__main__':
+    token = jwt.encode({"sub": "theOnlyLino"}, SECRET, algorithm="HS256")
+    print(f"Admin-Token: {token}")
     app.run(debug=True)
