@@ -1,5 +1,4 @@
 import os
-import re
 from queue import Queue
 from operator import attrgetter
 
