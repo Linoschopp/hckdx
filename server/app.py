@@ -23,7 +23,8 @@ def register():
 
 @app.get("/active")
 def active():
-    return make_response(devices.active())
+    device = request.headers.get("Device")
+    return str(devices[device].active)
 
 @app.post("/active/<device_hostname>")
 def activate(device_hostname):
