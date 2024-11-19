@@ -44,6 +44,7 @@ def activate():
             return "YOU ARE NOT LINO", 401
         else:
             devices[device_hostname].active = True
+            return "SUCCESS"
 
 
 @app.post("/deactivate")
@@ -63,6 +64,9 @@ def deactivate():
             return "YOU ARE NOT LINO", 401
         else:
             devices[device_hostname].active = False
+            devices[device_hostname].put(management.Command("BLANK", []))
+            return "SUCCESS"
+
 
 
 @app.post("/commands/add/")
