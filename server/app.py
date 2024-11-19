@@ -14,12 +14,14 @@ devices = management.DeviceStorage.load_devices(DEVICES_STORAGE_LOCATION)
 
 app = Flask(__name__)
 
+
 @app.post("/register")
 def register():
     hostname = request.get_data().decode()
-    token = jwt.encode({"sub": DEVICE_PREFIX+hostname}, SECRET, "HS256")
+    token = jwt.encode({"sub": DEVICE_PREFIX + hostname}, SECRET, "HS256")
     devices.devices.append(Device(hostname))
     return token
+
 
 @app.get("/active")
 def active():
@@ -117,6 +119,7 @@ def get_command():
             return "DEVICE NOT FOUND", 404
         cmd = device.get()
         return cmd.export_to_string()
+
 
 if __name__ == '__main__':
     token = jwt.encode({"sub": "theOnlyLino"}, SECRET, algorithm="HS256")
