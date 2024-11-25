@@ -64,7 +64,7 @@ class Device:
             commands = Queue()
         self.hostname = hostname
         self.commands: Queue[Command] = commands
-        self.active = False
+        self.state = "INACTIVE"
 
     def put(self, command: Command):
         self.commands.put(command)
@@ -94,8 +94,12 @@ class DeviceStorage:
     def __getitem__(self, item):
         return self.get_device(item)
 
-    def active(self):
-        return list(map(attrgetter("active"), self.devices))
+    def requested(self):
+        requested = []
+        for dev in self.devices:
+            if dev.active == "REQUESTED":
+                requested.append(dev)
+        return requested
 
     @classmethod
     def load_devices(cls, floc):
