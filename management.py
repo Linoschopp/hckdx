@@ -5,7 +5,10 @@ from operator import attrgetter
 if os.getenv("client") == "true":
     import time
     import pyautogui
+    import pynput
+    keyboard = pynput.keyboard.Controller()
     client = True
+    
 else:
     client = False
 
@@ -24,6 +27,28 @@ class Command:
                 time.sleep(int(d))
             case "BLANK":
                 return
+            case "TYPE":
+                keyboard.type(*self.args)
+            case "HOTKEY":
+                *hold, tap = self.args
+                for key in hold:
+                    if key.startswith("COD:"):
+                        keyboard.press(key[4:])
+                    elif key.startswith("KEY:"):
+                        keyboard.press(getattr(pynput.keyboard, key[4:]))
+                if tap.startswith("COD:"):
+                    keyboard.press(tap[4:])
+                elif key.startswith("KEY:"):
+                    keyboard.press(getattr(pynput.keyboard, tap[4:]))
+                for key in hold:
+                    if key.startswith("COD:"):
+                        keyboard.release(key[4:])
+                    elif key.startswith("KEY:"):
+                        keyboard.release(getattr(pynput.keyboard, key[4:]))
+                
+                        
+                        
+                    
 
     def export_to_string(self):
         return self.name+":"+"\0".join(self.args)
