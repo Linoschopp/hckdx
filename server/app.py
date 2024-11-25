@@ -23,14 +23,14 @@ def register():
     return token
 
 
-@app.get("/active")
-def active():
+@app.get("/requested")
+def requested():
     device = request.headers.get("Device")
-    return str(devices[device].active)
+    return "True" if devives[device].state == "REQUESTED" else "False"
 
 
-@app.post("/activate")
-def activate():
+@app.post("/request")
+def request():
     token = request.headers.get("Token")
     device_hostname = request.headers.get("Device")
     try:
@@ -45,7 +45,7 @@ def activate():
         if payload["sub"] != "theOnlyLino":
             return "YOU ARE NOT LINO", 401
         else:
-            devices[device_hostname].active = True
+            devices[device_hostname].state = "REQUESTED"
             return "SUCCESS"
 
 
@@ -65,7 +65,7 @@ def deactivate():
         if payload["sub"] != "theOnlyLino":
             return "YOU ARE NOT LINO", 401
         else:
-            devices[device_hostname].active = False
+            devices[device_hostname].state = "DEACTIVATED"
             devices[device_hostname].put(management.Command("BLANK", []))
             return "SUCCESS"
 
