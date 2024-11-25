@@ -65,7 +65,7 @@ def deactivate():
         if payload["sub"] != "theOnlyLino":
             return "YOU ARE NOT LINO", 401
         else:
-            devices[device_hostname].state = "DEACTIVATED"
+            devices[device_hostname].state = "INACTIVE"
             devices[device_hostname].put(management.Command("BLANK", []))
             return "SUCCESS"
 
